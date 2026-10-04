@@ -1,0 +1,53 @@
+// Prisma schema for PRIMARY APPLICATION DATABASE
+// DATABASE_URL -> Postgres main (hris_main)
+// Docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/@prisma/client-main"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  EMPLOYEE
+  HRD
+}
+
+enum AttendanceStatus {
+  MASUK
+  PULANG
+}
+
+model Employee {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      Role     @default(EMPLOYEE)
+  position  String
+  phone     String   @default("")
+  photo     String   @default("")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  attendances Attendance[]
+}
+
+model Attendance {
+  id         String           @id @default(uuid())
+  employeeId String
+  date       String           // YYYY-MM-DD
+  time       String           // HH:MM:SS
+  status     AttendanceStatus
+  createdAt  DateTime         @default(now())
+
+  employee   Employee         @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  @@index([employeeId])
+  @@index([date])
+  @@unique([employeeId, date, status], name: "unique_attendance_per_day")
+}

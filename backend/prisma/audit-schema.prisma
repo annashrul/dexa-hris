@@ -1,0 +1,34 @@
+// Prisma schema for SEPARATE AUDIT / LOGGING DATABASE (AGENT §18 requirement)
+// AUDIT_DATABASE_URL -> Postgres audit (hris_audit)
+// This is written by the audit consumer consuming from RabbitMQ.
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/@prisma/client-audit"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("AUDIT_DATABASE_URL")
+}
+
+enum EventType {
+  EMPLOYEE_PROFILE_UPDATED
+  ATTENDANCE_SUBMITTED
+}
+
+model ChangeLog {
+  id          String   @id @default(uuid())
+  entityType  String   @default("")
+  entityId    String   @default("")
+  eventType   String   @default("")
+  changedFields Json?
+  changes     Json?
+  triggeredBy String   @default("")
+  occurredAt  DateTime @default(now())
+  createdAt   DateTime @default(now())
+
+  @@index([entityType])
+  @@index([entityId])
+  @@index([createdAt])
+}

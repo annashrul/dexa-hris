@@ -1,0 +1,80 @@
+services:
+  postgres:
+    image: postgres:16-bookworm
+    platform: linux/amd64
+    container_name: hris-postgres-main
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-hris_main}
+      POSTGRES_USER: ${POSTGRES_USER:-dexa}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-dexa-dev-password-2026}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_main_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-dexa} -d ${POSTGRES_DB:-hris_main}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
+    networks:
+      - hris-network
+
+  postgres-audit:
+    image: postgres:16-bookworm
+    platform: linux/amd64
+    container_name: hris-postgres-audit
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_AUDIT_DB:-hris_audit}
+      POSTGRES_USER: ${POSTGRES_AUDIT_USER:-dexa_audit}
+      POSTGRES_PASSWORD: ${POSTGRES_AUDIT_PASSWORD:-dexa-audit-password-2026}
+    ports:
+      - "${POSTGRES_AUDIT_PORT:-5433}:5432"
+    volumes:
+      - postgres_audit_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_AUDIT_USER:-dexa_audit} -d ${POSTGRES_AUDIT_DB:-hris_audit}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
+    networks:
+      - hris-network
+
+  rabbitmq:
+    image: rabbitmq:3.13-management
+    platform: linux/amd64
+    container_name: hris-rabbitmq
+    restart: unless-stopped
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-hris}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-hris-dev-password-2026}
+      RABBITMQ_DEFAULT_VHOST: /
+    ports:
+      - "${RABBITMQ_PORT:-5672}:5672"
+      - "${RABBITMQ_MGMT_PORT:-15672}:15672"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 20s
+    networks:
+      - hris-network
+
+volumes:
+  postgres_main_data:
+    name: hris-postgres-main
+  postgres_audit_data:
+    name: hris-postgres-audit
+  rabbitmq_data:
+    name: hris-rabbitmq
+
+networks:
+  hris-network:
+    driver: bridge
+    name: hris-network

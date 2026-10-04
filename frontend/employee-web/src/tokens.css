@@ -1,0 +1,54 @@
+:root {
+  --color-primary-50: #fff5f5;
+  --color-primary-100: #ffe3e3;
+  --color-primary-200: #ffc9c9;
+  --color-primary-300: #ffa8a8;
+  --color-primary-400: #ff7b7b;
+  --color-primary-500: #c62828;
+  --color-primary-600: #b71c1c;
+  --color-primary-700: #9f1717;
+  --color-primary-800: #861313;
+  --color-primary-900: #6f1010;
+
+  --color-bg: #f7f7f8;
+  --color-surface: #ffffff;
+  --color-surface-alt: #fafafa;
+
+  --color-text-primary: #252525;
+  --color-text-secondary: #666666;
+  --color-text-muted: #8a8a8a;
+
+  --color-border: #e6e6e8;
+  --color-divider: #ececee;
+
+  --color-success: #2e7d32;
+  --color-warning: #ed6c02;
+  --color-error: #d32f2f;
+  --color-info: #1976d2;
+
+  --radius-xs: 8px;
+  --radius-sm: 10px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  --shadow-sm: 0 1px 4px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 2px 10px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.08);
+
+  --motion-fast: 150ms;
+  --motion-base: 200ms;
+  --motion-slow: 250ms;
+  --motion-ease: cubic-bezier(0.4, 0, 0.2, 1);
+}
